@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Personal Portfolio</title>
+    <meta name="description" content="Personal portfolio of a student learning programming and technology.">
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+    <!-- Animated Background -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="logo">Portfolio<span>.</span></div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#certificates">Certificates</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div class="nav-controls" style="display: flex; align-items: center;">
+            <div class="theme-toggle" id="theme-toggle">
+                <i class="fas fa-sun"></i>
+            </div>
+            <div class="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home Section -->
+    <section id="home" class="home-section">
+        <div class="home-content glass-panel">
+            <h4>Hello I am</h4>
+
+            <h1 class="glitch-text" data-text="Sahil">Sahil</h1>
+
+            <h3>Programmer & Tech Enthusiast</h3>
+            <p>I build things with code and explore the frontiers of AI and VLSI.</p>
+            <a href="#projects" class="btn btn-primary">View My Work</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="section-container">
+            <h2 class="section-title">About Me</h2>
+            <div class="about-content glass-panel">
+                <div class="about-text">
+                    I am a student interested in technology, programming, and electronics.
+                    Currently I am learning Python, AI, and web development.
+                    This website is my personal dashboard where I store my certificates,
+                    track my learning progress, and document my journey.</p>
+
+                    <div class="interests-container">
+                        <h3>My Interests</h3>
+                        <div class="badges">
+                            <span class="badge">Artificial Intelligence</span>
+                            <span class="badge">Python Development</span>
+                            <span class="badge">VLSI Design</span>
+                            <span class="badge">Web Development</span>
+                            <span class="badge">Data Science</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="projects-section">
+        <div class="section-container">
+            <h2 class="section-title">Projects</h2>
+            <div class="projects-grid" id="projects-container">
+                <!-- Projects will be dynamically injected here by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Certificates Section -->
+    <section id="certificates" class="certificates-section">
+        <div class="section-container">
+            <h2 class="section-title">Certificates</h2>
+            <div class="certs-grid" id="certs-container">
+                <!-- Certificates will be dynamically injected here by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal for Certificates -->
+    <div id="certModal" class="modal glass-panel">
+        <span class="close-modal">&times;</span>
+        <img class="modal-content" id="modalImg">
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="adminLoginModal" class="modal glass-panel">
+        <div class="admin-form-container glass-panel">
+            <span class="close-admin-login">&times;</span>
+            <h2>Admin Access</h2>
+            <p>Enter password to edit certificates</p>
+            <input type="password" id="adminPassword" placeholder="Enter Password" class="admin-input">
+            <p id="adminError" class="error-msg" style="display: none; color: var(--neon-pink); margin-top: 10px;">
+                Incorrect Password</p>
+            <button id="loginBtn" class="btn btn-primary" style="margin-top: 20px; width: 100%;">Login</button>
+        </div>
+    </div>
+
+    <!-- Admin Edit Modal -->
+    <div id="adminEditModal" class="modal glass-panel">
+        <div class="admin-form-container glass-panel"
+            style="max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto;">
+            <span class="close-admin-edit">&times;</span>
+            <h2>Manage Certificates</h2>
+
+            <div id="admin-certs-list" style="margin-bottom: 30px;">
+                <!-- Existing dynamically editable certificates go here -->
+            </div>
+
+            <hr style="border-color: var(--glass-border); margin: 20px 0;">
+
+            <h3>Add New Certificate</h3>
+            <div class="edit-cert-group">
+                <input type="text" id="new-cert-title" placeholder="Certificate Title" class="admin-input">
+                <input type="text" id="new-cert-provider" placeholder="Provider/Institution" class="admin-input">
+                <label for="new-cert-img"
+                    style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 5px; display: block;">Upload
+                    Image:</label>
+                <input type="file" id="new-cert-img" accept="image/*" class="admin-input" style="padding: 9px 15px;">
+                <button id="addCertBtn" class="btn btn-secondary" style="width: 100%; margin-top: 10px;">Add
+                    Certificate</button>
+                <p id="addErrorMsg"
+                    style="display: none; color: var(--neon-pink); margin-top: 10px; text-align: center;">All fields
+                    required!</p>
+            </div>
+
+            <hr style="border-color: var(--glass-border); margin: 40px 0;">
+
+            <!-- Resume Management -->
+            <h2>Manage Resume</h2>
+            <div class="edit-cert-group">
+                <p id="resume-status-msg" style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 10px;">No
+                    resume uploaded.</p>
+                <label for="admin-resume-upload"
+                    style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 5px; display: block;">Upload New
+                    Resume (PDF):</label>
+                <input type="file" id="admin-resume-upload" accept=".pdf" class="admin-input"
+                    style="padding: 9px 15px;">
+                <button id="uploadResumeBtn" class="btn btn-secondary" style="width: 100%; margin-top: 10px;">Upload
+                    Resume</button>
+                <p id="resumeSuccessMsg"
+                    style="display: none; color: var(--neon-green); margin-top: 10px; text-align: center;">Resume
+                    uploaded! Remember to Save All Changes.</p>
+            </div>
+
+            <hr style="border-color: var(--glass-border); margin: 40px 0;">
+
+            <!-- Projects Management -->
+            <h2>Manage Projects</h2>
+            <div id="admin-projects-list" style="margin-bottom: 30px;">
+                <!-- Existing dynamically editable projects go here -->
+            </div>
+            <hr style="border-color: var(--glass-border); margin: 20px 0;">
+            <h3>Add New Project</h3>
+            <div class="edit-cert-group">
+                <input type="text" id="new-proj-title" placeholder="Project Title" class="admin-input">
+                <textarea id="new-proj-desc" placeholder="Project Description" class="admin-input" rows="3"
+                    style="resize: vertical;"></textarea>
+                <input type="text" id="new-proj-tech" placeholder="Tech Stack (comma separated)" class="admin-input">
+                <input type="text" id="new-proj-github" placeholder="GitHub Link (optional)" class="admin-input">
+                <input type="text" id="new-proj-demo" placeholder="Live Demo Link (optional)" class="admin-input">
+                <label for="new-proj-media"
+                    style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 5px; display: block;">Upload
+                    Image/Video (optional):</label>
+                <input type="file" id="new-proj-media" accept="image/*,video/*" multiple class="admin-input"
+                    style="padding: 9px 15px;">
+                <button id="addProjBtn" class="btn btn-secondary" style="width: 100%; margin-top: 10px;">Add
+                    Project</button>
+                <p id="addProjErrorMsg"
+                    style="display: none; color: var(--neon-pink); margin-top: 10px; text-align: center;">Title,
+                    Description, and Tech Stack required!</p>
+            </div>
+
+            <button id="saveCertsBtn" class="btn btn-primary" style="margin-top: 20px; width: 100%;">Save All
+                Changes</button>
+            <p id="saveSuccessMsg"
+                style="display: none; color: var(--neon-green); margin-top: 10px; text-align: center;">Changes saved
+                successfully!</p>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div class="section-container">
+            <h2 class="section-title">Get In Touch</h2>
+            <div class="contact-content glass-panel">
+                <p>Feel free to reach out for collaborations, project inquiries, or just to say hi!</p>
+
+                <div class="contact-links">
+                    <a href="mailto:sahilkarwatkwr@gmail.com" class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>sahilkarwatkwr@gmail.com</span>
+                    </a>
+                    <a href="https://wa.me/919356641184" target="_blank" class="contact-item">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>+91 9356641184</span>
+                    </a>
+                    <a href="https://www.linkedin.com/in/sahil-karwatkar-3131a1341" target="_blank"
+                        class="contact-item">
+                        <i class="fab fa-linkedin"></i>
+                        <span>LinkedIn Profile</span>
+                    </a>
+                    <a href="https://github.com/sahilkarwatkar-arch" target="_blank" class="contact-item">
+                        <i class="fab fa-github"></i>
+                        <span>GitHub Profile</span>
+                    </a>
+                </div>
+
+                <div class="resume-download">
+                    <a href="resume.pdf" class="btn btn-secondary" id="resume-download-link"
+                        download="Sahil_Karwatkar_Resume.pdf">
+                        <i class="fas fa-download"></i> Download Resume
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 Sahil Karwatkar. All rights reserved.</p>
+            <div class="social-icons">
+                <a href="https://x.com/KarwaatkarS46905" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="https://www.instagram.com/karwatkar_sahil/" target="_blank"><i
+                        class="fab fa-instagram"></i></a>
+            </div>
+            <button id="openAdminBtn" class="btn btn-secondary"
+                style="margin-top: 20px; font-size: 0.8rem; padding: 8px 16px;">Admin Login</button>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
