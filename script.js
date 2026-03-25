@@ -268,40 +268,25 @@ const resumeStatusMsg = document.getElementById('resume-status-msg');
 const resumeSuccessMsg = document.getElementById('resumeSuccessMsg');
 const resumeDownloadLink = document.getElementById('resume-download-link');
 function loadData() {
-    const savedResume = localStorage.getItem('portfolio-resume-dynamic');
-    if (savedResume) {
-        resumeData = savedResume;
-        resumeDownloadLink.href = resumeData;
-        resumeDownloadLink.setAttribute('download', 'Sahil_Karwatkar_Resume.pdf');
-    } else {
-        resumeData = null;
-        resumeDownloadLink.href = 'resume.pdf';
-        resumeDownloadLink.setAttribute('download', 'Sahil_Karwatkar_Resume.pdf');
-    }
+    // Always use the default physical resume.pdf file
+    resumeDownloadLink.href = 'resume.pdf';
+    resumeDownloadLink.setAttribute('download', 'Sahil_Karwatkar_Resume.pdf');
 
-    const savedCerts = localStorage.getItem('portfolio-certs-dynamic');
-    if (savedCerts) {
-        certsData = JSON.parse(savedCerts);
-    } else {
-        // Fallback default certificates
-        certsData = [
-            { id: Date.now() + 1, title: 'Python for Data Science', provider: 'Coursera', img: 'https://placehold.co/400x300/1e1e24/00ffcc?text=Python+Certificate' },
-            { id: Date.now() + 2, title: 'Responsive Web Design', provider: 'freeCodeCamp', img: 'https://placehold.co/400x300/1e1e24/cc00ff?text=Web+Dev+Certificate' },
-            { id: Date.now() + 3, title: 'Machine Learning Basics', provider: 'Udacity', img: 'https://placehold.co/400x300/1e1e24/00ccff?text=AI+Certificate' }
-        ];
-    }
+    // Define your certificates here. Place your images in the 'images/certificates/' folder.
+    // Replace 'https://placehold.co/...' with 'images/certificates/your_image.jpg'
+    certsData = [
+        { id: 1, title: 'Python for Data Science', provider: 'Coursera', img: 'https://placehold.co/400x300/1e1e24/00ffcc?text=Python+Certificate' },
+        { id: 2, title: 'Responsive Web Design', provider: 'freeCodeCamp', img: 'https://placehold.co/400x300/1e1e24/cc00ff?text=Web+Dev+Certificate' },
+        { id: 3, title: 'Machine Learning Basics', provider: 'Udacity', img: 'https://placehold.co/400x300/1e1e24/00ccff?text=AI+Certificate' }
+    ];
 
-    const savedProjects = localStorage.getItem('portfolio-projects-dynamic');
-    if (savedProjects) {
-        projectsData = JSON.parse(savedProjects);
-    } else {
-        // Fallback default projects
-        projectsData = [
-            { id: Date.now() + 11, title: 'AI Chat Assistant', desc: 'A smart chatbot built using large language models to assist with daily tasks and programming queries.', tech: 'Python, OpenAI API, Flask', github: '#', demo: '#' },
-            { id: Date.now() + 12, title: 'Portfolio Website', desc: 'A modern, responsive personal portfolio website with a dark theme, neon accents, and an animated background.', tech: 'HTML, CSS, JavaScript', github: '#', demo: '#' },
-            { id: Date.now() + 13, title: 'VLSI Logic Simulator', desc: 'A basic logic gate simulator focusing on basic digital electronics and VLSI concepts.', tech: 'C++, Verilog', github: '#', demo: '' }
-        ];
-    }
+    // Define your projects here. Place your images in the 'images/projects/' folder.
+    // You can add media by adding a property like: media: [{type: 'image', src: 'images/projects/your_image.jpg'}]
+    projectsData = [
+        { id: 11, title: 'AI Chat Assistant', desc: 'A smart chatbot built using large language models to assist with daily tasks and programming queries.', tech: 'Python, OpenAI API, Flask', github: '#', demo: '#' },
+        { id: 12, title: 'Portfolio Website', desc: 'A modern, responsive personal portfolio website with a dark theme, neon accents, and an animated background.', tech: 'HTML, CSS, JavaScript', github: '#', demo: '#' },
+        { id: 13, title: 'VLSI Logic Simulator', desc: 'A basic logic gate simulator focusing on basic digital electronics and VLSI concepts.', tech: 'C++, Verilog', github: '#', demo: '' }
+    ];
 
     saveToLocalStorage();
     renderCerts();
