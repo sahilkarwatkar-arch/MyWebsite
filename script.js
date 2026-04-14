@@ -268,40 +268,25 @@ const resumeStatusMsg = document.getElementById('resume-status-msg');
 const resumeSuccessMsg = document.getElementById('resumeSuccessMsg');
 const resumeDownloadLink = document.getElementById('resume-download-link');
 function loadData() {
-    const savedResume = localStorage.getItem('portfolio-resume-dynamic');
-    if (savedResume) {
-        resumeData = savedResume;
-        resumeDownloadLink.href = resumeData;
-        resumeDownloadLink.setAttribute('download', 'Sahil_Karwatkar_Resume.pdf');
-    } else {
-        resumeData = null;
-        resumeDownloadLink.href = 'resume.pdf';
-        resumeDownloadLink.setAttribute('download', 'Sahil_Karwatkar_Resume.pdf');
-    }
+    // Always use the default physical resume.pdf file
+    resumeDownloadLink.href = 'resume.pdf';
+    resumeDownloadLink.setAttribute('download', 'Sahil_Karwatkar_Resume.pdf');
 
-    const savedCerts = localStorage.getItem('portfolio-certs-dynamic');
-    if (savedCerts) {
-        certsData = JSON.parse(savedCerts);
-    } else {
-        // Fallback default certificates
-        certsData = [
-            { id: Date.now() + 1, title: 'Python for Data Science', provider: 'Coursera', img: 'https://placehold.co/400x300/1e1e24/00ffcc?text=Python+Certificate' },
-            { id: Date.now() + 2, title: 'Responsive Web Design', provider: 'freeCodeCamp', img: 'https://placehold.co/400x300/1e1e24/cc00ff?text=Web+Dev+Certificate' },
-            { id: Date.now() + 3, title: 'Machine Learning Basics', provider: 'Udacity', img: 'https://placehold.co/400x300/1e1e24/00ccff?text=AI+Certificate' }
-        ];
-    }
+    // Define your certificates here. Place your images in the 'images/certificates/' folder.
+    // Replace 'https://placehold.co/...' with 'images/certificates/your_image.jpg'
+    certsData = [
+        { id: 1, title: 'Python for Data Science', provider: 'Coursera', img: 'https://placehold.co/400x300/1e1e24/00ffcc?text=Python+Certificate' },
+        { id: 2, title: 'Responsive Web Design', provider: 'freeCodeCamp', img: 'https://placehold.co/400x300/1e1e24/cc00ff?text=Web+Dev+Certificate' },
+        { id: 3, title: 'Machine Learning Basics', provider: 'Udacity', img: 'https://placehold.co/400x300/1e1e24/00ccff?text=AI+Certificate' }
+    ];
 
-    const savedProjects = localStorage.getItem('portfolio-projects-dynamic');
-    if (savedProjects) {
-        projectsData = JSON.parse(savedProjects);
-    } else {
-        // Fallback default projects
-        projectsData = [
-            { id: Date.now() + 11, title: 'AI Chat Assistant', desc: 'A smart chatbot built using large language models to assist with daily tasks and programming queries.', tech: 'Python, OpenAI API, Flask', github: '#', demo: '#' },
-            { id: Date.now() + 12, title: 'Portfolio Website', desc: 'A modern, responsive personal portfolio website with a dark theme, neon accents, and an animated background.', tech: 'HTML, CSS, JavaScript', github: '#', demo: '#' },
-            { id: Date.now() + 13, title: 'VLSI Logic Simulator', desc: 'A basic logic gate simulator focusing on basic digital electronics and VLSI concepts.', tech: 'C++, Verilog', github: '#', demo: '' }
-        ];
-    }
+    // Define your projects here. Place your images in the 'images/projects/' folder.
+    // You can add media by adding a property like: media: [{type: 'image', src: 'images/projects/your_image.jpg'}]
+    projectsData = [
+        { id: 11, title: 'AI Chat Assistant', desc: 'A smart chatbot built using large language models to assist with daily tasks and programming queries.', tech: 'Python, OpenAI API, Flask', github: '#', demo: '#' },
+        { id: 12, title: 'Portfolio Website', desc: 'A modern, responsive personal portfolio website with a dark theme, neon accents, and an animated background.', tech: 'HTML, CSS, JavaScript', github: '#', demo: '#' },
+        { id: 13, title: 'VLSI Logic Simulator', desc: 'A basic logic gate simulator focusing on basic digital electronics and VLSI concepts.', tech: 'C++, Verilog', github: '#', demo: '' }
+    ];
 
     saveToLocalStorage();
     renderCerts();
@@ -662,8 +647,15 @@ closeAdminLogin.addEventListener('click', () => {
     adminError.style.display = 'none';
 });
 
+adminPasswordInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        loginBtn.click();
+    }
+});
+
 loginBtn.addEventListener('click', () => {
     if (adminPasswordInput.value === ADMIN_PASSWORD) {
+        playHappySound();
         adminLoginModal.style.display = 'none';
         adminPasswordInput.value = '';
         adminError.style.display = 'none';
@@ -674,6 +666,7 @@ loginBtn.addEventListener('click', () => {
         renderAdminResume();
         adminEditModal.style.display = 'flex';
     } else {
+        playSadSound();
         adminError.style.display = 'block';
     }
 });
@@ -840,3 +833,88 @@ saveCertsBtn.addEventListener('click', () => {
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', loadData);
+
+// --- Audio Manager ---
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playStaticClick() {
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+    
+    // Create a very short burst of white noise for a "static" sound
+    const bufferSize = Math.floor(audioCtx.sampleRate * 0.05); // 50ms of noise
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+    }
+    
+    const noise = audioCtx.createBufferSource();
+    noise.buffer = buffer;
+    
+    // Add a highpass filter to make it sound sharp and clicky, like static
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.value = 5000;
+    
+    const gainNode = audioCtx.createGain();
+    gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.04);
+    
+    noise.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    noise.start();
+}
+
+function playHappySound() {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    // Ascending "happy" blip
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.1);
+    
+    gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+    
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.15);
+}
+
+function playSadSound() {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    // Descending "sad" buzz
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.3);
+    
+    gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+    
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.3);
+}
+
+// Attach sound to all buttons, links, and interactive elements
+document.body.addEventListener('click', function(e) {
+    if (e.target.closest('#loginBtn')) {
+        return; // specific button has its own sounds triggered manually
+    }
+    if (e.target.closest('button') || e.target.closest('.btn') || e.target.closest('a') || e.target.closest('.close-modal') || e.target.closest('.theme-toggle') || e.target.closest('.hamburger')) {
+        playStaticClick();
+    }
+});
