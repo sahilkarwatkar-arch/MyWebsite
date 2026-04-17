@@ -915,6 +915,21 @@ document.body.addEventListener('click', function(e) {
         return; // specific button has its own sounds triggered manually
     }
     if (e.target.closest('button') || e.target.closest('.btn') || e.target.closest('a') || e.target.closest('.close-modal') || e.target.closest('.theme-toggle') || e.target.closest('.hamburger')) {
-        playStaticClick();
+        playReallyHappySound();
     }
+});
+
+// Aesthetic Visual Click Effect
+document.addEventListener('click', function(e) {
+    const ripple = document.createElement('div');
+    ripple.className = 'click-effect';
+    ripple.style.left = e.clientX + 'px';
+    ripple.style.top = e.clientY + 'px';
+    
+    document.body.appendChild(ripple);
+    
+    // Remove after animation finishes (600ms)
+    setTimeout(() => {
+        ripple.remove();
+    }, 600);
 });
