@@ -889,6 +889,32 @@ function playHappySound() {
     osc.stop(audioCtx.currentTime + 0.15);
 }
 
+function playReallyHappySound() {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    
+    // Play a quick major arpeggio (C5, E5, G5, C6) for a very joyful blip
+    const frequencies = [523.25, 659.25, 783.99, 1046.50];
+    let startTime = audioCtx.currentTime;
+    
+    frequencies.forEach((freq, index) => {
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        
+        osc.type = 'sine'; // Smooth, happy bell-like tone
+        osc.frequency.setValueAtTime(freq, startTime + (index * 0.05));
+        
+        gainNode.gain.setValueAtTime(0, startTime + (index * 0.05));
+        gainNode.gain.linearRampToValueAtTime(0.15, startTime + (index * 0.05) + 0.01);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + (index * 0.05) + 0.15);
+        
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        osc.start(startTime + (index * 0.05));
+        osc.stop(startTime + (index * 0.05) + 0.15);
+    });
+}
+
 function playSadSound() {
     if (audioCtx.state === 'suspended') audioCtx.resume();
     const osc = audioCtx.createOscillator();
